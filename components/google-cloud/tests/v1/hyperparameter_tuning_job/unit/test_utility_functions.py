@@ -21,7 +21,7 @@ import unittest
 from google.cloud.aiplatform import hyperparameter_tuning as hpt
 
 
-class HyperparameterTuningJobTest(unittest.TestCase):
+class UtilityFunctionsTests(unittest.TestCase):
 
   def test_serialize_parameters(self):
     parameters = {
