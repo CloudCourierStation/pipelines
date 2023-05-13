@@ -35,11 +35,6 @@ def second_order_passthrough_decorator(*args, **kwargs):
   return decorator
 
 
-utils.gcpc_output_name_converter = second_order_passthrough_decorator
-dsl.component = second_order_passthrough_decorator
-dsl.container_component = first_order_passthrough_decorator
-
-
 def load_from_file(path: str):
   with open(path) as f:
     contents = f.read()
@@ -50,7 +45,44 @@ def load_from_file(path: str):
   return comp
 
 
+utils.gcpc_output_name_converter = second_order_passthrough_decorator
+dsl.component = second_order_passthrough_decorator
+dsl.container_component = first_order_passthrough_decorator
 components.load_component_from_file = load_from_file
+
+
+class OutputPath(dsl.OutputPath):
+
+  def __repr__(self) -> str:
+    type_string = getattr(self.type, '__name__', '')
+    return f'dsl.OutputPath({type_string})'
+
+
+dsl.OutputPath = OutputPath
+
+
+class InputClass:
+
+  def __getitem__(self, type_) -> str:
+    type_string = getattr(type_, 'schema_title', getattr(type_, '__name__', ''))
+    return f'dsl.Input[{type_string}]'
+
+
+Input = InputClass()
+
+dsl.Input = Input
+
+
+class OutputClass:
+
+  def __getitem__(self, type_) -> str:
+    type_string = getattr(type_, 'schema_title', getattr(type_, '__name__', ''))
+    return f'dsl.Output[{type_string}]'
+
+
+Output = OutputClass()
+
+dsl.Output = Output
 
 # order from earliest to latest
 # start with 2.0.0b3, which is the first time we're using the new theme
@@ -165,23 +197,7 @@ pygments_style = None
 htmlhelp_basename = 'GoogleCloudPipelineComponentsDocs'
 
 
-def modify_signature_for_better_component_rendering(
-    app, what, name, obj, options, signature, return_annotation
-):
-  if signature is not None:
-    signature = re.sub(
-        (
-            r'[0-9a-zA-Z_]+:'
-            r' <kfp\.components\.types\.type_annotations\.OutputPath object at'
-            r' 0x[0-9a-fA-F]+>?,?\s?'
-        ),
-        '',
-        signature,
-    )
-  return signature, return_annotation
-
-
-def example_grouper(app, what, name, obj, section, parent):
+def component_grouper(app, what, name, obj, section, parent):
   if getattr(obj, '_is_component', False):
     return 'Components'
 
@@ -193,9 +209,5 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
 
 
 def setup(app):
-  app.connect(
-      'autodoc-process-signature',
-      modify_signature_for_better_component_rendering,
-  )
-  app.connect('autodocsumm-grouper', example_grouper)
+  app.connect('autodocsumm-grouper', component_grouper)
   app.connect('autodoc-skip-member', autodoc_skip_member)
