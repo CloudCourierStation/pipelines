@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Set up Docker Buildx
-      run: docker/setup-buildx-action@v1
+      run: docker buildx create --use
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker buildx build   --platform linux/amd64,linux/arm64 -t waibizi/api-server:latest -f backend/Dockerfile  .  --push
