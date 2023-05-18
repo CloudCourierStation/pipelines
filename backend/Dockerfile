@@ -28,7 +28,7 @@ RUN go-licenses csv ./backend/src/apiserver > /tmp/licenses.csv && \
 
 # 2. Compile preloaded pipeline samples
 FROM python:3.8 as compiler
-RUN apt-get update -y && apt-get install --no-install-recommends -y -q default-jdk python3-setuptools python3-dev jq
+RUN apt-get update -y && apt-get install  -y -q default-jdk python3-setuptools python3-dev jq
 RUN wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py
 COPY backend/requirements.txt .
 RUN python3 -m pip install -r requirements.txt --no-cache-dir
