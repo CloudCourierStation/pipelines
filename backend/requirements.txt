@@ -97,7 +97,8 @@ matplotlib-inline==0.1.3  # via ipykernel, ipython
 mistune==0.8.4            # via nbconvert
 #ml-metadata==1.4.0        # via ml-pipelines-sdk, tfx
 ml-metadata
-ml-pipelines-sdk==1.4.0   # via tfx
+#ml-pipelines-sdk==1.4.0   # via tfx
+ml-pipelines-sdk
 mypy-extensions==0.4.3    # via typing-inspect
 nbclient==0.5.9           # via nbconvert
 nbconvert==6.3.0          # via notebook
